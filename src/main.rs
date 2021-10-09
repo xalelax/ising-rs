@@ -26,7 +26,7 @@ impl IsingModel {
         let mut rng = rand::thread_rng();
 
         let initial_state: Vec<Spin> = (0..n_spinors)
-            .map(|_| choices.choose(&mut rng).unwrap().clone())
+            .map(|_| *choices.choose(&mut rng).unwrap())
             .collect();
         IsingModel {
             width,
