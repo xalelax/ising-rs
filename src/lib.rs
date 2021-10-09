@@ -108,11 +108,3 @@ impl IsingModel {
         }
     }
 }
-
-fn main() {
-    let mut model = IsingModel::new(10, 10, (2f32.sqrt() + 1.).ln() / 2.);
-    for _ in 0..3000 {
-        model.step(0.1);
-        println!("{}", model.total_energy())
-    }
-}
