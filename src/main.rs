@@ -1,6 +1,7 @@
 use rand::seq::SliceRandom;
 
 type Spin = i8;
+type GridCoordinate = i8;
 
 struct Spinor;
 impl Spinor {
@@ -9,14 +10,17 @@ impl Spinor {
 }
 
 struct IsingModel {
-    width: u8,
-    height: u8,
+    width: GridCoordinate,
+    height: GridCoordinate,
     coupling_constant: f32,
     spins: Vec<Spin>,
 }
 
 impl IsingModel {
-    fn new(width: u8, height: u8, coupling_constant: f32) -> IsingModel {
+    fn new(width: GridCoordinate, height: GridCoordinate, coupling_constant: f32) -> IsingModel {
+        if width < 1 || height < 1 {
+            panic!("Invalid dimensions");
+        }
         let n_spinors = width * height;
         let choices = [Spinor::UP, Spinor::DOWN];
         let mut rng = rand::thread_rng();
