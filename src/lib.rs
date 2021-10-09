@@ -1,4 +1,5 @@
 use rand::{seq::SliceRandom, Rng};
+use wasm_bindgen::prelude::*;
 
 type Spin = i8;
 type GridCoordinate = i8;
@@ -9,6 +10,19 @@ impl Spinor {
     const DOWN: Spin = -1;
 }
 
+struct Offset2D {
+    x: GridCoordinate,
+    y: GridCoordinate,
+}
+
+const NN_OFFSETS: [Offset2D; 4] = [
+    Offset2D { x: 0, y: -1 },
+    Offset2D { x: 0, y: 1 },
+    Offset2D { x: 1, y: 0 },
+    Offset2D { x: -1, y: 0 },
+];
+
+#[wasm_bindgen]
 struct IsingModel {
     width: GridCoordinate,
     height: GridCoordinate,
@@ -16,13 +30,9 @@ struct IsingModel {
     spins: Vec<Spin>,
 }
 
-struct Offset2D {
-    x: GridCoordinate,
-    y: GridCoordinate,
-}
-
+#[wasm_bindgen]
 impl IsingModel {
-    fn new(width: GridCoordinate, height: GridCoordinate, coupling_constant: f32) -> IsingModel {
+    pub fn new(width: GridCoordinate, height: GridCoordinate, coupling_constant: f32) -> IsingModel {
         if width < 1 || height < 1 {
             panic!("Invalid dimensions");
         }
@@ -40,13 +50,6 @@ impl IsingModel {
             spins: initial_state,
         }
     }
-
-    const OFFSETS: [Offset2D; 4] = [
-        Offset2D { x: 0, y: -1 },
-        Offset2D { x: 0, y: 1 },
-        Offset2D { x: 1, y: 0 },
-        Offset2D { x: -1, y: 0 },
-    ];
 
     fn get_spin(&self, i: GridCoordinate, j: GridCoordinate) -> &Spin {
         let x = if i>=0 {i % self.width}  else { self.width  + i % self.width };
@@ -69,7 +72,7 @@ impl IsingModel {
 
     fn calculate_energy_contribution(&self, i: GridCoordinate, j: GridCoordinate) -> f32 {
         let mut neighbors_spin_sum: Spin = 0;
-        for offset in Self::OFFSETS {
+        for offset in NN_OFFSETS {
             neighbors_spin_sum += self.get_spin(i + offset.x, j + offset.y)
         }
         self.coupling_constant * (self.get_spin(i, j) * neighbors_spin_sum) as f32
@@ -90,7 +93,7 @@ impl IsingModel {
         (2.0 * energy_contribution / temperature).exp()
     }
 
-    fn step(&mut self, temperature: f32) -> Option<(GridCoordinate, GridCoordinate)> {
+    pub fn step(&mut self, temperature: f32) -> Option<(GridCoordinate, GridCoordinate)> {
         let (i, j) = self.select_random_node();
 
         let energy_contribution = self.calculate_energy_contribution(i, j);
