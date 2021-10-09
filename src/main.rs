@@ -1,7 +1,4 @@
-use rand::{
-    seq::SliceRandom,
-    Rng
-};
+use rand::{seq::SliceRandom, Rng};
 
 type Spin = i8;
 type GridCoordinate = i8;
@@ -45,10 +42,10 @@ impl IsingModel {
     }
 
     const OFFSETS: [Offset2D; 4] = [
-        Offset2D{x: 0, y: -1},
-        Offset2D{x: 0, y: 1},
-        Offset2D{x: 1, y: 0},
-        Offset2D{x: -1, y: 0},
+        Offset2D { x: 0, y: -1 },
+        Offset2D { x: 0, y: 1 },
+        Offset2D { x: 1, y: 0 },
+        Offset2D { x: -1, y: 0 },
     ];
 
     fn get_spin(&self, i: GridCoordinate, j: GridCoordinate) -> &Spin {
@@ -90,7 +87,7 @@ impl IsingModel {
     }
 
     fn calculate_boltzmann_factor(energy_contribution: f32, temperature: f32) -> f32 {
-        (2.0*energy_contribution/temperature).exp()
+        (2.0 * energy_contribution / temperature).exp()
     }
 
     fn step(&mut self, temperature: f32) -> Option<(GridCoordinate, GridCoordinate)> {
@@ -99,7 +96,8 @@ impl IsingModel {
         let energy_contribution = self.calculate_energy_contribution(i, j);
 
         let spin_should_flip = energy_contribution >= 0.0  
-            || rand::thread_rng().gen::<f32>() < Self::calculate_boltzmann_factor(energy_contribution, temperature);
+            || rand::thread_rng().gen::<f32>()
+                < Self::calculate_boltzmann_factor(energy_contribution, temperature);
 
         if spin_should_flip {
             self.flip_spin(i, j);
@@ -109,8 +107,6 @@ impl IsingModel {
             None
         }
     }
-
-    
 }
 
 fn main() {
