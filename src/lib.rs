@@ -23,7 +23,7 @@ const NN_OFFSETS: [Offset2D; 4] = [
 ];
 
 #[wasm_bindgen]
-struct IsingModel {
+pub struct IsingModel {
     width: GridCoordinate,
     height: GridCoordinate,
     coupling_constant: f32,
@@ -78,7 +78,7 @@ impl IsingModel {
         self.coupling_constant * (self.get_spin(i, j) * neighbors_spin_sum) as f32
     }
 
-    fn total_energy(&self) -> f32 {
+    pub fn total_energy(&self) -> f32 {
         // Room for improvements, naive loop
         let mut total: f32 = 0.;
         for i in 0..self.width {
@@ -93,7 +93,7 @@ impl IsingModel {
         (2.0 * energy_contribution / temperature).exp()
     }
 
-    pub fn step(&mut self, temperature: f32) -> Option<(GridCoordinate, GridCoordinate)> {
+    fn step(&mut self, temperature: f32) -> Option<[GridCoordinate; 2]> {
         let (i, j) = self.select_random_node();
 
         let energy_contribution = self.calculate_energy_contribution(i, j);
@@ -104,10 +104,18 @@ impl IsingModel {
 
         if spin_should_flip {
             self.flip_spin(i, j);
-            Some((i, j))
+            Some([i, j])
         } else {
-            println!("Rejected");
             None
+        }
+    }
+
+    // Should probably try to return something different from a string
+    pub fn js_step(&mut self, temperature: f32) -> String {
+        let updated_spin = self.step(temperature);
+        match updated_spin {
+            Some(coordinate) => [coordinate[0].to_string(), coordinate[1].to_string()].join(" "),
+            None => String::new()
         }
     }
 }
