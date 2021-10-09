@@ -102,9 +102,8 @@ impl IsingModel {
             || rand::thread_rng().gen::<f32>() < Self::calculate_boltzmann_factor(energy_contribution, temperature);
 
         if spin_should_flip {
-            println!("Accepted");
             self.flip_spin(i, j);
-            return Some((i, j))
+            Some((i, j))
         } else {
             println!("Rejected");
             None
@@ -116,7 +115,7 @@ impl IsingModel {
 
 fn main() {
     let mut model = IsingModel::new(10, 10, (2f32.sqrt() + 1.).ln() / 2.);
-    for i in 0..3000 {
+    for _ in 0..3000 {
         model.step(0.1);
         println!("{}", model.total_energy())
     }
