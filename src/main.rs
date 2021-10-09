@@ -16,6 +16,11 @@ struct IsingModel {
     spins: Vec<Spin>,
 }
 
+struct Offset2D {
+    x: GridCoordinate,
+    y: GridCoordinate,
+}
+
 impl IsingModel {
     fn new(width: GridCoordinate, height: GridCoordinate, coupling_constant: f32) -> IsingModel {
         if width < 1 || height < 1 {
@@ -35,6 +40,14 @@ impl IsingModel {
             spins: initial_state,
         }
     }
+
+    const OFFSETS: [Offset2D; 4] = [
+        Offset2D{x: 0, y: -1},
+        Offset2D{x: 0, y: 1},
+        Offset2D{x: 1, y: 0},
+        Offset2D{x: -1, y: 0},
+    ];
+
     fn get_spin(&self, i: GridCoordinate, j: GridCoordinate) -> &Spin {
         let x = if i>=0 {i % self.width}  else { self.width  + i % self.width };
         let y = if j>=0 {j % self.height} else { self.height + j % self.height };
