@@ -35,6 +35,25 @@ impl IsingModel {
             spins: initial_state,
         }
     }
+    fn get_spin(&self, i: GridCoordinate, j: GridCoordinate) -> &Spin {
+        let x = if i>=0 {i % self.width}  else { self.width  + i % self.width };
+        let y = if j>=0 {j % self.height} else { self.height + j % self.height };
+        println!("{},{}", x, y);
+        &self.spins[(x + self.width * y) as usize]
+    }
+
+    fn flip_spin(&mut self, i: GridCoordinate, j: GridCoordinate) {
+        let x = if i>=0 {i % self.width}  else { self.width + i % self.width };
+        let y = if j>=0 {j % self.height} else { self.height + j % self.height };
+        self.spins[(x + self.width * y) as usize] *= -1;
+    }
+
+    fn select_random_node(&self) -> (GridCoordinate, GridCoordinate) {
+        let mut rng = rand::thread_rng();
+        let i = rng.gen_range(0..self.width);
+        let j = rng.gen_range(0..self.height);
+        (i, j)
+    }
 }
 
 fn main() {
