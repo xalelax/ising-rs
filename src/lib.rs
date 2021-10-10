@@ -124,4 +124,7 @@ impl IsingModel {
     pub fn js_get_spin(&self, i: GridCoordinate, j: GridCoordinate) -> Spin {
         *self.get_spin(i, j)
     }
+
+    pub fn get_width(&self) -> GridCoordinate { self.width }
+    pub fn get_height(&self) -> GridCoordinate { self.height }
 }
