@@ -51,6 +51,7 @@ impl IsingModel {
         }
     }
 
+    // TODO: refactor get_spin and flip_spin, lots of repetition
     fn get_spin(&self, i: GridCoordinate, j: GridCoordinate) -> &Spin {
         let x = if i>=0 {i % self.width}  else { self.width  + i % self.width };
         let y = if j>=0 {j % self.height} else { self.height + j % self.height };
@@ -117,5 +118,10 @@ impl IsingModel {
             Some(coordinate) => [coordinate[0].to_string(), coordinate[1].to_string()].join(" "),
             None => String::new()
         }
+    }
+
+    // TODO: Maybe I can just refactor get spin to return a Spin instead of &Spin?
+    pub fn js_get_spin(&self, i: GridCoordinate, j: GridCoordinate) -> Spin {
+        *self.get_spin(i, j)
     }
 }
